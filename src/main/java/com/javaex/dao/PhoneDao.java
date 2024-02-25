@@ -12,6 +12,53 @@ import com.javaex.vo.PersonVo;
 
 public class PhoneDao {
 
+	private Connection conn = null;
+	private PreparedStatement pstmt = null;
+	private ResultSet rs = null;
+
+	private String driver = "com.mysql.cj.jdbc.Driver";
+	private String url = "jdbc:mysql://localhost:3306/web_db";
+	private String id = "web";
+	private String pw = "web";
+
+	// 메소드- 일반
+
+	private void getConnection() {
+		try {
+			// 1. JDBC 드라이버 (Oracle) 로딩
+			Class.forName(driver); // 위에 생성자로 올려주고 변수명으로 넣어줌
+
+			// 2. Connection 얻어오기
+			conn = DriverManager.getConnection(url, id, pw);
+		} catch (ClassNotFoundException e) {
+			System.out.println("error: 드라이버 로딩 실패 - " + e);
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+
+	} // getConnection()끝
+
+	private void close() {
+		// 5. 자원정리
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+	} // getConnection()끝
+	
+	
+	
+	
+	
 	// 전체 가져오기
 	public List<PersonVo> personSelect() {
 
@@ -238,4 +285,51 @@ public class PhoneDao {
 		}
 		return count;
 	}
+	
+	public PersonVo personSelectOne(PersonVo personVo) {
+		PersonVo personList = null;
+
+		this.getConnection();
+
+		try {
+
+			// 3. SQL문 준비 / 바인딩 / 실행
+			String query = "";
+			query += " select person_id, ";
+			query += " 		 name, ";
+			query += " 		 hp, ";
+			query += " 		 company, ";
+			query += " from person ";
+			query += " where person_id = ? ";
+
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, personVo.getPersonId());
+			
+
+			rs = pstmt.executeQuery();
+			// 4.결과처리
+			while (rs.next()) {
+				int personId = rs.getInt("personId");
+				String name = rs.getString("name");
+				String hp = rs.getString("hp");
+				String company = rs.getString("company");
+				personList = new PersonVo();
+				personList.setPersonId(personId);
+				personList.setName(name);
+				personList.setHp(hp);
+				personList.setCompany(company);
+
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+		this.close();
+		return personList;
+	}
+	
+	
+	
+	
+	
 }

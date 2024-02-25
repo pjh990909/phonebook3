@@ -6,8 +6,12 @@ public class PersonVo {
 	private String name;
 	private String hp;
 	private String company;
-	
+
 	public PersonVo() {
+	}
+
+	public PersonVo(int personId) {
+		this.personId = personId;
 	}
 
 	public PersonVo(String name, String hp, String company) {
@@ -59,9 +63,5 @@ public class PersonVo {
 	public String toString() {
 		return "PersonVo [personId=" + personId + ", name=" + name + ", hp=" + hp + ", company=" + company + "]";
 	}
-	
-	
-	
-	
-	
+
 }
