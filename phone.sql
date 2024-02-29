@@ -16,7 +16,8 @@ select person_id as personId,
 	   name,
        hp,
        company
-from person;
+from person
+where person_id = 9;
 
 delete from person
 where person_id = 18;
@@ -25,4 +26,5 @@ update person
 set name = '기안' ,
 	hp = '01015555',
     company = '05-8848'
-where person_id = 3 ;
+where person_id = 19 ;
+
